@@ -1,6 +1,6 @@
 {
   "name": "codeglue",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A good enough build system",
   "author": "Andrew McPherson <@ehgoodenough>",
   "main": "codeglue.js",
@@ -11,6 +11,29 @@
     "url": "https://github.com/ehgoodenough/codeglue"
   },
   "dependencies": {
+    "babel-core": "^6.21.0",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "browser-sync": "^2.18.5",
+    "chalk": "^1.1.3",
+    "css-loader": "^0.26.1",
+    "dateformat": "^2.0.0",
+    "eslint": "^3.12.2",
+    "eslint-loader": "^1.6.1",
+    "extended-define-webpack-plugin": "^0.1.2",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.9.0",
+    "filesize": "^3.3.0",
+    "html-loader": "^0.4.4",
+    "internal-ip": "^1.2.0",
+    "json-loader": "^0.5.4",
+    "progress-bar-webpack-plugin": "^1.9.0",
+    "rimraf": "^2.5.4",
+    "stats-webpack-plugin": "^0.4.2",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.14.0",
     "yargs": "^6.5.0"
   }
 }
