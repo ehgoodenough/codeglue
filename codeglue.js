@@ -19,8 +19,6 @@ var PORT = yargs.argv.port || process.env.PORT ||  8080
 var MODE = (yargs.argv.mode || process.env.MODE || "BUILD").toUpperCase()
 var STAGE = (yargs.argv.stage || process.env.STAGE || "DEVELOPMENT").toUpperCase()
 
-print("Starting a " + STAGE + " " + MODE)
-
 var build = new Object()
 
 rimraf("./builds/web", function() {
@@ -34,7 +32,7 @@ rimraf("./builds/web", function() {
         },
         resolve: {
             modules: [
-                path.join(__dirname, "source"),
+                path.resolve("source"),
                 "node_modules"
             ]
         },
