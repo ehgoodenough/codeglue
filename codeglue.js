@@ -48,6 +48,12 @@ rimraf("./builds/web", function() {
                     loader: "babel-loader",
                     test: new RegExp("\.js$", "i"),
                     exclude: new RegExp("node_modules"),
+                    options: {
+                        presets: [
+                            "es2015",
+                            "react"
+                        ]
+                    }
                 },
                 {
                     loader: "url-loader",
