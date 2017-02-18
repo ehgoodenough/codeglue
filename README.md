@@ -43,3 +43,4 @@ Will build from source for a specific stage, like `--stage=development` or `--st
 * Support tunneling servers via ngrok.
 * Support bundling with an Electron app.
 * Include some sort of processor for the CSS.
+* Remove implicit dependency on `eslintrc`.
