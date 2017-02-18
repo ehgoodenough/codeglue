@@ -1,6 +1,6 @@
 {
   "name": "codeglue",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "A good enough build system",
   "author": "Andrew McPherson <@ehgoodenough>",
   "main": "codeglue.js",

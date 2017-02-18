@@ -42,7 +42,7 @@ rimraf("./builds/web", function() {
                     loader: "eslint-loader",
                     test: new RegExp("\.js$", "i"),
                     exclude: new RegExp("node_modules"),
-                    pre: true
+                    enforce: "pre"
                 },
                 {
                     loader: "babel-loader",
