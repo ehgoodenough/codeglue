@@ -65,6 +65,7 @@ rimraf("./builds/web", function() {
             new WebpackCopyPlugin([
                 {from: "source/index.html"},
                 {from: "source/index.css"},
+                {from: "**/*.ttf", context: "source"},
             ]),
             new WebpackProgressBarPlugin({
                 width: "00000000".length,
