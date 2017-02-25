@@ -1,6 +1,6 @@
 {
   "name": "codeglue",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "A good enough build system",
   "author": "Andrew McPherson <@ehgoodenough>",
   "main": "codeglue.js",
@@ -20,8 +20,8 @@
     "copy-webpack-plugin": "^4.0.1",
     "dateformat": "^2.0.0",
     "eslint": "^3.15.0",
-    "eslint-loader": "^1.6.1",
-    "file-loader": "^0.10.0",
+    "eslint-loader": "^1.6.3",
+    "file-loader": "^0.10.1",
     "filesize": "^3.5.4",
     "internal-ip": "^1.2.0",
     "progress-bar-webpack-plugin": "^1.9.3",
