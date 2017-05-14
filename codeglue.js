@@ -1,5 +1,12 @@
 #! /usr/bin/env node
 
+// Codeglue v1.2.1
+
+// Usage:
+// codeglue --stage=PRODUCTION
+// codeglue --stage=DEVELOPMENT --mode=SERVER
+// codeglue --stage=PRODUCTION --mode=PUBLISH
+
 var path = require("path")
 var yargs = require("yargs")
 var chalk = require("chalk")
@@ -13,7 +20,9 @@ var browsersync = require("browser-sync")
 var WebpackCopyPlugin = require("copy-webpack-plugin")
 var WebpackStatsPlugin = require("stats-webpack-plugin")
 var WebpackProgressBarPlugin = require("progress-bar-webpack-plugin")
-var WebpackDefinePlugin = require("webpack").DefinePlugin
+
+var NAME = require("./package.json").name || "whatever"
+var VERSION = require("./package.json").version || "0.0.0"
 
 var PORT = yargs.argv.port || process.env.PORT ||  8080
 var MODE = (yargs.argv.mode || process.env.MODE || "BUILD").toUpperCase()
@@ -24,15 +33,15 @@ var build = new Object()
 rimraf("./builds/web", function() {
     webpack({
         entry: {
-            "index.js": "./source/index.js"
+            "index.js": "./source/index.js",
         },
         output: {
             filename: "[name]",
-            path: "./builds/web"
+            path: path.resolve("./builds/web"),
         },
         resolve: {
             modules: [
-                path.resolve("source"),
+                path.resolve("./source"),
                 "node_modules"
             ]
         },
@@ -57,7 +66,11 @@ rimraf("./builds/web", function() {
                 },
                 {
                     loader: "url-loader",
-                    test: new RegExp("\.(tff|woff|eot|png|jpe?g|gif|svg|mp3|wav|ogg)$", "i"),
+                    test: new RegExp("\.(png|jpe?g|gif|svg)$", "i"),
+                },
+                {
+                    loader: "file-loader",
+                    test: new RegExp("\.(tff|woff|eot|mp3|wav|ogg)$", "i"),
                 }
             ],
         },
@@ -65,7 +78,6 @@ rimraf("./builds/web", function() {
             new WebpackCopyPlugin([
                 {from: "source/index.html"},
                 {from: "source/index.css"},
-                {from: "**/*.ttf", context: "source"},
             ]),
             new WebpackProgressBarPlugin({
                 width: "00000000".length,
@@ -75,16 +87,14 @@ rimraf("./builds/web", function() {
                 customSummary: new Function(),
                 summary: false,
             }),
-            new WebpackDefinePlugin({
-                MODE: "'" + MODE + "'",
-                STAGE: "'" + STAGE + "'"
-            }),
             new WebpackStatsPlugin("stats.json"),
         ],
         watch: (
             MODE == "SERVER"
         )
     }, (error, stats) => {
+        abort(error)
+
         stats = stats.toJson()
 
         var time = stats.time / 1000 + "s"
@@ -112,6 +122,13 @@ rimraf("./builds/web", function() {
             } else if(build.server != null) {
                 build.server.reload()
             }
+        } else if(MODE == "PUBLISH") {
+            require("gh-pages").publish(path.resolve("./builds/web"), {
+                message: "Publishing " + NAME + "@" + VERSION
+            }, (error) => {
+                abort(error)
+                print("Published " + NAME + "@" + VERSION)
+            })
         }
     })
 })
@@ -119,4 +136,11 @@ rimraf("./builds/web", function() {
 function print(message) {
     var time = dateformat(new Date(), "HH:MM:ss")
     console.log("[" + chalk.green(time) + "]", message)
+}
+
+function abort(error) {
+    if(error != undefined) {
+        console.log(error)
+        throw -1
+    }
 }

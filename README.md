@@ -20,7 +20,7 @@ Will build from source. It starts with the indexes, like "./source/index.js", an
 
 Will build from source and host the build at [localhost:8080](http://localhost:8080). The sources are compiled as detailed above. If, after that, any of the sources are changed, the script will automatically rebuild them, and automatically refresh the build that the server is hosting.
 
-### `codeglue --mode=bundle` ###
+### `codeglue --mode=publish` ###
 
 Will build from source and bundle them into executables. The executables support Windows, Mac, and Linux. The executables also include an inlined webpage, or `web1`, which can be run in Chrome, Firefox, Opera, and Safari.
 
