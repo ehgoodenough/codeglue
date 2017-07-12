@@ -45,6 +45,5 @@ Will build from source for a specific stage, like `--stage=development` or `--st
 * Include some sort of processor for the CSS.
 * Remove implicit dependency on `eslintrc`.
 * Re-evaluate image loaders.
-* Re-implement the stage variables.
 * Remove default eslint/babel configs.
 * Add casual documentation on how to use.

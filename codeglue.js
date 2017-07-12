@@ -17,6 +17,7 @@ var filesize = require("filesize")
 var dateformat = require("dateformat")
 var browsersync = require("browser-sync")
 
+var WebpackDefinePlugin = webpack.DefinePlugin
 var WebpackCopyPlugin = require("copy-webpack-plugin")
 var WebpackStatsPlugin = require("stats-webpack-plugin")
 var WebpackProgressBarPlugin = require("progress-bar-webpack-plugin")
@@ -26,9 +27,10 @@ var PACKAGE = require(path.join(process.cwd(), "./package.json"))
 var NAME = PACKAGE.name || "whatever"
 var VERSION = PACKAGE.version || "0.0.0"
 
-var PORT = yargs.argv.port || process.env.PORT ||  8080
 var MODE = (yargs.argv.mode || process.env.MODE || "BUILD").toUpperCase()
 var STAGE = (yargs.argv.stage || process.env.STAGE || "DEVELOPMENT").toUpperCase()
+
+var PORT = yargs.argv.port || process.env.PORT ||  8080
 
 var LOCAL_ADDRESS = "127.0.0.1"
 var INTERNAL_ADDRESS = "0.0.0.0"
@@ -95,6 +97,11 @@ rimraf("./builds/web", () => {
                 customSummary: new Function(),
                 summary: false,
             }),
+            new WebpackDefinePlugin([
+                __NAME__: JSON.stringify(NAME),
+                __VERSION__: JSON.stringify(VERSION),
+                __STAGE__: JSON.stringify(STAGE),
+            ]),
             new WebpackStatsPlugin("stats.json"),
         ],
         watch: (
