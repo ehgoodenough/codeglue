@@ -97,11 +97,11 @@ rimraf("./builds/web", () => {
                 customSummary: new Function(),
                 summary: false,
             }),
-            new WebpackDefinePlugin([
+            new WebpackDefinePlugin({
                 __NAME__: JSON.stringify(NAME),
                 __VERSION__: JSON.stringify(VERSION),
                 __STAGE__: JSON.stringify(STAGE),
-            ]),
+            }),
             new WebpackStatsPlugin("stats.json"),
         ],
         watch: (
