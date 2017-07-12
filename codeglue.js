@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-// Codeglue v1.2.1
+// Codeglue v1.2.x
 
 // Usage:
 // codeglue --stage=PRODUCTION
@@ -21,16 +21,24 @@ var WebpackCopyPlugin = require("copy-webpack-plugin")
 var WebpackStatsPlugin = require("stats-webpack-plugin")
 var WebpackProgressBarPlugin = require("progress-bar-webpack-plugin")
 
-var NAME = require("./package.json").name || "whatever"
-var VERSION = require("./package.json").version || "0.0.0"
+var PACKAGE = require(path.join(process.cwd(), "./package.json"))
+
+var NAME = PACKAGE.name || "whatever"
+var VERSION = PACKAGE.version || "0.0.0"
 
 var PORT = yargs.argv.port || process.env.PORT ||  8080
 var MODE = (yargs.argv.mode || process.env.MODE || "BUILD").toUpperCase()
 var STAGE = (yargs.argv.stage || process.env.STAGE || "DEVELOPMENT").toUpperCase()
 
+var LOCAL_ADDRESS = "127.0.0.1"
+var INTERNAL_ADDRESS = "0.0.0.0"
+ip.v4().then((address) => {
+    INTERNAL_ADDRESS = address
+})
+
 var build = new Object()
 
-rimraf("./builds/web", function() {
+rimraf("./builds/web", () => {
     webpack({
         entry: {
             "index.js": "./source/index.js",
@@ -117,8 +125,8 @@ rimraf("./builds/web", function() {
                     port: PORT
                 })
 
-                print("Listening on " + chalk.underline("http://" + "127.0.0.1" + ":" + PORT))
-                print("Listening on " + chalk.underline("http://" + ip.v4() + ":" + PORT))
+                print("Listening on " + chalk.underline("http://" + LOCAL_ADDRESS + ":" + PORT))
+                print("Listening on " + chalk.underline("http://" + INTERNAL_ADDRESS + ":" + PORT))
             } else if(build.server != null) {
                 build.server.reload()
             }
