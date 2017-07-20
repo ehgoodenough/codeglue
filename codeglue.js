@@ -29,6 +29,7 @@ var VERSION = PACKAGE.version || "0.0.0"
 
 var MODE = (yargs.argv.mode || process.env.MODE || "BUILD").toUpperCase()
 var STAGE = (yargs.argv.stage || process.env.STAGE || "DEVELOPMENT").toUpperCase()
+var SLUG = yargs.argv.slug || "."
 
 var PORT = yargs.argv.port || process.env.PORT ||  8080
 
@@ -75,7 +76,7 @@ rimraf("./builds/web", () => {
                     }
                 },
                 {
-                    loader: "url-loader",
+                    loader: "file-loader",
                     test: new RegExp("\.(png|jpe?g|gif|svg)$", "i"),
                 },
                 {
@@ -139,7 +140,9 @@ rimraf("./builds/web", () => {
             }
         } else if(MODE == "PUBLISH") {
             require("gh-pages").publish(path.resolve("./builds/web"), {
-                message: "Publishing " + NAME + "@" + VERSION
+                message: "Publishing " + NAME + "@" + VERSION + " to " + SLUG,
+                add: SLUG === ".",
+                dest: SLUG,
             }, (error) => {
                 abort(error)
                 print("Published " + NAME + "@" + VERSION)
