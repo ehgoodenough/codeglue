@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-// Codeglue v1.2.x
+// Codeglue v1.3.x
 
 // Usage:
 // codeglue --stage=PRODUCTION
