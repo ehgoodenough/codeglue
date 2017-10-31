@@ -70,7 +70,7 @@ rimraf("./builds/web", () => {
                     exclude: new RegExp("node_modules"),
                     options: {
                         presets: [
-                            "es2015",
+                            "env",
                             "react"
                         ]
                     }
