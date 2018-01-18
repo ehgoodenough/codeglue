@@ -72,7 +72,7 @@ rimraf("./builds/web", () => {
                 {
                     loaders: ["style-loader", "css-loader", "less-loader"],
                     test: new RegExp("\.(css|less)$", "i"),
-                }
+                },
                 {
                     loader: "file-loader",
                     test: new RegExp("\.(png|jpe?g|gif|svg)$", "i"),
