@@ -24,7 +24,7 @@ var WebpackProgressBarPlugin = require("progress-bar-webpack-plugin")
 
 var PACKAGE = require(path.join(process.cwd(), "./package.json"))
 
-var NAME = PACKAGE.name || "whatever"
+var NAME = PACKAGE.name || "!!!"
 var VERSION = PACKAGE.version || "0.0.0"
 
 var MODE = (yargs.argv.mode || process.env.MODE || "BUILD").toUpperCase()
@@ -68,27 +68,28 @@ rimraf("./builds/web", () => {
                     loader: "babel-loader",
                     test: new RegExp("\.js$", "i"),
                     exclude: new RegExp("node_modules"),
-                    options: {
-                        presets: [
-                            "env",
-                            "react"
-                        ]
-                    }
                 },
+                {
+                    loaders: ["style-loader", "css-loader", "less-loader"],
+                    test: new RegExp("\.(css|less)$", "i"),
+                }
                 {
                     loader: "file-loader",
                     test: new RegExp("\.(png|jpe?g|gif|svg)$", "i"),
                 },
                 {
                     loader: "file-loader",
-                    test: new RegExp("\.(tff|woff|eot|mp3|wav|ogg)$", "i"),
-                }
+                    test: new RegExp("\.(ttf|woff|eot)$", "i"),
+                },
+                {
+                    loader: "file-loader",
+                    test: new RegExp("\.(mp3|wav|ogg)$", "i"),
+                },
             ],
         },
         plugins: [
             new WebpackCopyPlugin([
                 {from: "source/index.html"},
-                {from: "source/index.css"},
             ]),
             new WebpackProgressBarPlugin({
                 width: "00000000".length,
