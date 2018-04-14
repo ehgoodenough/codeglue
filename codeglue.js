@@ -129,9 +129,14 @@ rimraf("./builds/web", () => {
                 build.server = browsersync({
                     server: "./builds/web",
                     logLevel: "silent",
+                    ghostMode: false,
                     notify: false,
                     minify: false,
-                    port: PORT
+                    port: PORT,
+                    // https: {
+                    //     key: require.resolve("./certificates/testing.key"),
+                    //     cert: require.resolve("./certificates/testing.crt")
+                    // }
                 })
 
                 print("Listening on " + chalk.underline("http://" + LOCAL_ADDRESS + ":" + PORT))
