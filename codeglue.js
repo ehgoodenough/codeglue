@@ -32,6 +32,7 @@ var STAGE = (yargs.argv.stage || process.env.STAGE || "DEVELOPMENT").toUpperCase
 var SLUG = yargs.argv.slug || "."
 
 var PORT = yargs.argv.port || process.env.PORT ||  8080
+var SSL = yargs.argv.ssl || process.env.SSL || false
 
 var LOCAL_ADDRESS = "127.0.0.1"
 var INTERNAL_ADDRESS = "0.0.0.0"
@@ -133,10 +134,10 @@ rimraf("./builds/web", () => {
                     notify: false,
                     minify: false,
                     port: PORT,
-                    // https: {
-                    //     key: require.resolve("./certificates/testing.key"),
-                    //     cert: require.resolve("./certificates/testing.crt")
-                    // }
+                    https: SSL && {
+                        key: require.resolve("./localhost.key"),
+                        cert: require.resolve("./localhost.crt")
+                    }
                 })
 
                 print("Listening on " + chalk.underline("http://" + LOCAL_ADDRESS + ":" + PORT))
