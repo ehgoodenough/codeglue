@@ -145,7 +145,7 @@ rimraf("./builds/web", () => {
             } else if(build.server != null) {
                 build.server.reload()
             }
-        } else if(MODE == "PUBLISH") {
+        } else if(MODE == "PUBLISH" || MODE == "DEPLOY") {
             require("gh-pages").publish(path.resolve("./builds/web"), {
                 message: "Publishing " + NAME + "@" + VERSION + " to " + SLUG,
                 add: SLUG === ".",
