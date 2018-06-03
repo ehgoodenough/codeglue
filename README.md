@@ -1,7 +1,5 @@
 # Codeglue #
 
-![](http://i.imgur.com/qUEuani.png)
-
 ```
 ├── source
 │   ├── index.html
@@ -20,7 +18,7 @@ Will build from source. It starts with the indexes, like "./source/index.js", an
 
 Will build from source and host the build at [localhost:8080](http://localhost:8080). The sources are compiled as detailed above. If, after that, any of the sources are changed, the script will automatically rebuild them, and automatically refresh the build that the server is hosting.
 
-### `codeglue --mode=publish` ###
+### `codeglue --mode=deploy` ###
 
 Will build from source and bundle them into executables. The executables support Windows, Mac, and Linux. The executables also include an inlined webpage, or `web1`, which can be run in Chrome, Firefox, Opera, and Safari.
 
@@ -42,7 +40,6 @@ Will build from source for a specific stage, like `--stage=development` or `--st
 * Minify the code via UglifyJS.
 * Support tunneling servers via ngrok.
 * Support bundling with an Electron app.
-* Include some sort of processor for the CSS.
 * Remove implicit dependency on `eslintrc`.
 * Re-evaluate image loaders.
 * Remove default eslint/babel configs.
