@@ -109,6 +109,7 @@ rimraf("./builds/web", () => {
             }),
             new WebpackStatsPlugin("stats.json"),
         ],
+        "mode": STAGE.toLowerCase(), // stage == mode??
         "watch": MODE == "SERVER"
     }, (error, stats) => {
         abort(error)
