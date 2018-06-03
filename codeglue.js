@@ -5,100 +5,102 @@
 // Usage:
 // codeglue --stage=PRODUCTION
 // codeglue --stage=DEVELOPMENT --mode=SERVER
-// codeglue --stage=PRODUCTION --mode=PUBLISH
+// codeglue --stage=PRODUCTION --mode=DEPLOY
 
-var path = require("path")
-var yargs = require("yargs")
-var chalk = require("chalk")
-var rimraf = require("rimraf")
-var ip = require("internal-ip")
-var webpack = require("webpack")
-var filesize = require("filesize")
-var dateformat = require("dateformat")
-var browsersync = require("browser-sync")
+const path = require("path")
+const yargs = require("yargs")
+const chalk = require("chalk")
+const rimraf = require("rimraf")
+const ip = require("internal-ip")
+const webpack = require("webpack")
+const filesize = require("filesize")
+const githubpages = require("gh-pages")
+const dateformat = require("dateformat")
+const browsersync = require("browser-sync")
 
-var WebpackDefinePlugin = webpack.DefinePlugin
-var WebpackCopyPlugin = require("copy-webpack-plugin")
-var WebpackStatsPlugin = require("stats-webpack-plugin")
-var WebpackProgressBarPlugin = require("progress-bar-webpack-plugin")
+const WebpackDefinePlugin = webpack.DefinePlugin
+const WebpackCopyPlugin = require("copy-webpack-plugin")
+const WebpackStatsPlugin = require("stats-webpack-plugin")
+const WebpackProgressBarPlugin = require("progress-bar-webpack-plugin")
 
-var PACKAGE = require(path.join(process.cwd(), "./package.json"))
+const PACKAGE = require(path.join(process.cwd(), "./package.json"))
 
-var NAME = PACKAGE.name || "!!!"
-var VERSION = PACKAGE.version || "0.0.0"
+const NAME = PACKAGE.name || "!!!"
+const VERSION = PACKAGE.version || "0.0.0"
 
-var MODE = (yargs.argv.mode || process.env.MODE || "BUILD").toUpperCase()
-var STAGE = (yargs.argv.stage || process.env.STAGE || "DEVELOPMENT").toUpperCase()
-var SLUG = yargs.argv.slug || "."
+const MODE = (yargs.argv.mode || process.env.MODE || "BUILD").toUpperCase()
+const STAGE = (yargs.argv.stage || process.env.STAGE || "DEVELOPMENT").toUpperCase()
+const SLUG = yargs.argv.slug || "v" + VERSION
 
-var PORT = yargs.argv.port || process.env.PORT ||  8080
-var SSL = yargs.argv.ssl || process.env.SSL || false
+const PORT = yargs.argv.port || process.env.PORT ||  8080
+const SSL = yargs.argv.ssl || process.env.SSL || false
 
-var LOCAL_ADDRESS = "127.0.0.1"
-var INTERNAL_ADDRESS = "0.0.0.0"
+let LOCAL_ADDRESS = "127.0.0.1"
+let INTERNAL_ADDRESS = "0.0.0.0"
+let PROTOCOL = SSL ? "https" : "http"
 ip.v4().then((address) => {
     INTERNAL_ADDRESS = address
 })
 
-var build = new Object()
+const build = new Object()
 
 rimraf("./builds/web", () => {
     webpack({
-        entry: {
+        "entry": {
             "index.js": "./source/index.js",
         },
-        output: {
-            filename: "[name]",
-            path: path.resolve("./builds/web"),
+        "output": {
+            "filename": "[name]",
+            "path": path.resolve("./builds/web"),
         },
-        resolve: {
-            modules: [
+        "resolve": {
+            "modules": [
                 path.resolve("./source"),
                 "node_modules"
             ]
         },
-        module: {
-            rules: [
+        "module": {
+            "rules": [
                 {
-                    loader: "eslint-loader",
-                    test: new RegExp("\.js$", "i"),
-                    exclude: new RegExp("node_modules"),
-                    enforce: "pre"
+                    "loader": "eslint-loader",
+                    "test": new RegExp("\.js$", "i"),
+                    "exclude": new RegExp("node_modules"),
+                    "enforce": "pre"
                 },
                 {
-                    loader: "babel-loader",
-                    test: new RegExp("\.js$", "i"),
-                    exclude: new RegExp("node_modules"),
+                    "loader": "babel-loader",
+                    "test": new RegExp("\.js$", "i"),
+                    "exclude": new RegExp("node_modules"),
                 },
                 {
-                    loaders: ["style-loader", "css-loader", "less-loader"],
-                    test: new RegExp("\.(css|less)$", "i"),
+                    "loaders": ["style-loader", "css-loader", "less-loader"],
+                    "test": new RegExp("\.(css|less)$", "i"),
                 },
                 {
-                    loader: "file-loader",
-                    test: new RegExp("\.(png|jpe?g|gif|svg)$", "i"),
+                    "loader": "file-loader",
+                    "test": new RegExp("\.(png|jpe?g|gif|svg)$", "i"),
                 },
                 {
-                    loader: "file-loader",
-                    test: new RegExp("\.(ttf|woff|eot)$", "i"),
+                    "loader": "file-loader",
+                    "test": new RegExp("\.(ttf|woff|eot)$", "i"),
                 },
                 {
-                    loader: "file-loader",
-                    test: new RegExp("\.(mp3|wav|ogg)$", "i"),
+                    "loader": "file-loader",
+                    "test": new RegExp("\.(mp3|wav|ogg)$", "i"),
                 },
             ],
         },
-        plugins: [
+        "plugins": [
             new WebpackCopyPlugin([
-                {from: "source/index.html"},
+                {"from": "source/index.html"},
             ]),
             new WebpackProgressBarPlugin({
-                width: "00000000".length,
-                complete: chalk.green(new String("O")),
-                incomplete: chalk.red(new String("0")),
-                format: "[:bar] Building (:elapseds)",
-                customSummary: new Function(),
-                summary: false,
+                "width": "00000000".length,
+                "complete": chalk.green(new String("O")),
+                "incomplete": chalk.red(new String("0")),
+                "format": "[:bar] Building (:elapseds)",
+                "customSummary": new Function(),
+                "summary": false,
             }),
             new WebpackDefinePlugin({
                 __NAME__: JSON.stringify(NAME),
@@ -107,49 +109,47 @@ rimraf("./builds/web", () => {
             }),
             new WebpackStatsPlugin("stats.json"),
         ],
-        watch: (
-            MODE == "SERVER"
-        )
+        "watch": MODE == "SERVER"
     }, (error, stats) => {
         abort(error)
 
         stats = stats.toJson()
 
-        var time = stats.time / 1000 + "s"
-        var size = filesize(stats.assets.reduce((size, asset) => {
+        const time = stats.time / 1000 + "s"
+        const size = filesize(stats.assets.reduce((size, asset) => {
             return size + asset.size
         }, 0), {spacer: ""})
 
         print("Building (" + time + ")(" + size + ")")
 
-        stats.errors.forEach((error) => {console.log(error.toString())})
-        stats.warnings.forEach((warning) => {console.log(warning.toString())})
+        stats.errors.forEach((error) => console.log(error.toString()))
+        stats.warnings.forEach((warning) => console.log(warning.toString()))
 
         if(MODE == "SERVER") {
             if(build.server == null) {
                 build.server = browsersync({
-                    server: "./builds/web",
-                    logLevel: "silent",
-                    ghostMode: false,
-                    notify: false,
-                    minify: false,
-                    port: PORT,
-                    https: SSL && {
-                        key: require.resolve("./localhost.key"),
-                        cert: require.resolve("./localhost.crt")
+                    "server": "./builds/web",
+                    "logLevel": "silent",
+                    "ghostMode": false,
+                    "notify": false,
+                    "minify": false,
+                    "port": PORT,
+                    "https": SSL && {
+                        "key": require.resolve("./localhost.key"),
+                        "cert": require.resolve("./localhost.crt")
                     }
                 })
 
-                print("Listening on " + chalk.underline("http://" + LOCAL_ADDRESS + ":" + PORT))
-                print("Listening on " + chalk.underline("http://" + INTERNAL_ADDRESS + ":" + PORT))
+                print("Listening on " + chalk.underline(PROTOCOL + "://" + LOCAL_ADDRESS + ":" + PORT))
+                print("Listening on " + chalk.underline(PROTOCOL + "://" + INTERNAL_ADDRESS + ":" + PORT))
             } else if(build.server != null) {
                 build.server.reload()
             }
-        } else if(MODE == "PUBLISH" || MODE == "DEPLOY") {
-            require("gh-pages").publish(path.resolve("./builds/web"), {
-                message: "Publishing " + NAME + "@" + VERSION + " to " + SLUG,
-                add: SLUG === ".",
-                dest: SLUG,
+        } else if(MODE == "DEPLOY" || MODE == "PUBLISH") {
+            githubpages.publish(path.resolve("./builds/web"), {
+                "message": "Publishing " + NAME + "@" + VERSION + " to " + SLUG,
+                "add": SLUG === ".",
+                "dest": SLUG,
             }, (error) => {
                 abort(error)
                 print("Published " + NAME + "@" + VERSION)
