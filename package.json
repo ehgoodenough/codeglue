@@ -1,6 +1,6 @@
 {
   "name": "codeglue",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "A good enough build system",
   "author": "Andrew McPherson <@ehgoodenough>",
   "main": "codeglue.js",
@@ -19,11 +19,11 @@
     "browser-sync": "^2.24.4",
     "chalk": "^2.4.1",
     "copy-webpack-plugin": "^4.5.1",
-    "css-loader": "^0.28.11",
+    "css-loader": "^1.0.0",
     "dateformat": "^3.0.3",
-    "eslint": "^4.19.1",
+    "eslint": "^5.4.0",
     "eslint-loader": "^2.0.0",
-    "file-loader": "^1.1.11",
+    "file-loader": "^2.0.0",
     "filesize": "^3.6.1",
     "gh-pages": "^1.2.0",
     "internal-ip": "^3.0.1",
@@ -32,9 +32,9 @@
     "progress-bar-webpack-plugin": "^1.11.0",
     "rimraf": "^2.6.2",
     "stats-webpack-plugin": "^0.6.2",
-    "style-loader": "^0.21.0",
+    "style-loader": "^0.22.1",
     "url-loader": "^1.0.1",
     "webpack": "^4.10.2",
-    "yargs": "^11.0.0"
+    "yargs": "^12.0.1"
   }
 }
