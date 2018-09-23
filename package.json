@@ -1,6 +1,6 @@
 {
   "name": "codeglue",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "A good enough build system",
   "author": "Andrew McPherson <@ehgoodenough>",
   "main": "codeglue.js",
@@ -35,6 +35,7 @@
     "style-loader": "^0.22.1",
     "url-loader": "^1.0.1",
     "webpack": "^4.10.2",
+    "xml-loader": "^1.2.1",
     "yargs": "^12.0.1"
   }
 }

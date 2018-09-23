@@ -88,6 +88,10 @@ rimraf("./builds/web", () => {
                     "loader": "file-loader",
                     "test": new RegExp("\.(mp3|wav|ogg)$", "i"),
                 },
+                {
+                    loader: "xml-loader",
+                    test: new RegExp("\.xml$", "i"),
+                }
             ],
         },
         "plugins": [
