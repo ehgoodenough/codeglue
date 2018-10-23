@@ -114,6 +114,7 @@ rimraf("./builds/web", () => {
             new WebpackStatsPlugin("stats.json"),
         ],
         "mode": STAGE.toLowerCase(), // stage == mode??
+        "devtool": "source-map",
         "watch": MODE == "SERVER"
     }, (error, stats) => {
         abort(error)
