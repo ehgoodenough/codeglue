@@ -1,6 +1,6 @@
 {
   "name": "codeglue",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "A good enough build system",
   "author": "Andrew McPherson <@ehgoodenough>",
   "main": "codeglue.js",
@@ -11,12 +11,13 @@
     "url": "https://github.com/ehgoodenough/codeglue"
   },
   "dependencies": {
-    "@babel/preset-env": "^7.1.6",
+    "babel-eslint": "^8.2.3",
+    "babel-loader": "^7.1.4",
     "@babel/core": "^7.1.6",
+    "@babel/plugin-transform-react-jsx": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
     "@babel/preset-react": "^7.0.0",
-    "babel-eslint": "^10.0.1",
-    "babel-loader": "^8.0.4",
-    "browser-sync": "^2.26.3",
+    "browser-sync": "^2.24.4",
     "chalk": "^2.4.1",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^1.0.1",
