@@ -82,7 +82,7 @@ rimraf("./builds/web", () => {
                 },
                 {
                     "loader": "file-loader",
-                    "test": new RegExp("\.(ttf|woff|eot)$", "i"),
+                    "test": new RegExp("\.(ttf|woff2?|eot)$", "i"),
                 },
                 {
                     "loader": "file-loader",
