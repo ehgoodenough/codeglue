@@ -1,5 +1,8 @@
 # Codeglue #
 
+![npm](https://img.shields.io/npm/v/codeglue.svg)
+![npm](https://img.shields.io/npm/dt/codeglue.svg)
+
 A good enough build system.
 
 ### Usage ###
