@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-// Codeglue v1.6.x
+// Codeglue v1.7.x
 
 // Usage:
 // codeglue --stage=PRODUCTION
@@ -95,6 +95,7 @@ rimraf("./builds/web", () => {
                 {
                     "loaders": ["file-loader", "app-manifest-loader"],
                     "test": new RegExp("manifest.json", "i"),
+                    "type": "javascript/auto",
                 },
             ],
         },
