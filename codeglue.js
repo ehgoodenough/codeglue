@@ -91,8 +91,8 @@ rimraf("./builds/web", () => {
                 {
                     "loader": "xml-loader",
                     "test": new RegExp("\.xml$", "i"),
-                }
-                {,
+                },
+                {
                     "loaders": ["file-loader", "app-manifest-loader"],
                     "test": new RegExp("manifest.json", "i"),
                 },
