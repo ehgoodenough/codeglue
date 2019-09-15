@@ -1,6 +1,6 @@
 {
   "name": "codeglue",
-  "version": "1.6.5",
+  "version": "1.7.0",
   "description": "A good enough build system",
   "author": "Andrew McPherson <@ehgoodenough>",
   "main": "codeglue.js",
@@ -15,6 +15,7 @@
     "@babel/plugin-transform-react-jsx": "^7.3.0",
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-react": "^7.0.0",
+    "app-manifest-loader": "^2.4.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
