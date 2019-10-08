@@ -156,15 +156,6 @@ rimraf("./builds/web", () => {
             } else if(build.server != null) {
                 build.server.reload()
             }
-        } else if(MODE == "DEPLOY" || MODE == "PUBLISH") {
-            githubpages.publish(path.resolve("./builds/web"), {
-                "message": "Publishing " + NAME + "@" + VERSION + " to " + SLUG,
-                "add": SLUG === ".",
-                "dest": SLUG,
-            }, (error) => {
-                abort(error)
-                print("Published " + NAME + "@" + VERSION)
-            })
         }
     })
 })
