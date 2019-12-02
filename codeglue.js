@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-// Codeglue v1.7.x
+// Codeglue v1.8.x
 
 // Usage:
 // codeglue --stage=PRODUCTION
@@ -91,6 +91,10 @@ rimraf("./builds/web", () => {
                 {
                     "loader": "xml-loader",
                     "test": new RegExp("\.xml$", "i"),
+                },
+                {
+                    "loader": "csv-loader",
+                    "test": new RegExp("\.csv$", "i"),
                 },
                 {
                     "loaders": ["file-loader", "app-manifest-loader"],
