@@ -109,12 +109,12 @@ rimraf("./builds/web", () => {
             ],
         },
         "plugins": [
-            new WebpackHtmlPlugin({
-                "template": "source/index.html"
-            }),
-            // new WebpackCopyPlugin([
-            //     {"from": "source/index.html"},
-            // ]),
+            // new WebpackHtmlPlugin({
+            //     "template": "source/index.html"
+            // }),
+            new WebpackCopyPlugin([
+                {"from": "source/index.html"},
+            ]),
             new WebpackProgressBarPlugin({
                 "width": "00000000".length,
                 "complete": chalk.green(new String("O")),
