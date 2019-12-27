@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-// Codeglue v1.8.x
+// Codeglue v1.9.x
 
 // Usage:
 // codeglue --stage=PRODUCTION
@@ -97,6 +97,10 @@ rimraf("./builds/web", () => {
                     "test": new RegExp("\.csv$", "i"),
                 },
                 {
+                    "loader": "html-loader",
+                    "test": new RegExp("\.html$", "i"),
+                },
+                {
                     "loaders": ["file-loader", "app-manifest-loader"],
                     "test": new RegExp("manifest.json", "i"),
                     "type": "javascript/auto",
@@ -104,9 +108,12 @@ rimraf("./builds/web", () => {
             ],
         },
         "plugins": [
-            new WebpackCopyPlugin([
-                {"from": "source/index.html"},
-            ]),
+            new WebpackHtmlPlugin({
+                "template": "source/index.html"
+            }),
+            // new WebpackCopyPlugin([
+            //     {"from": "source/index.html"},
+            // ]),
             new WebpackProgressBarPlugin({
                 "width": "00000000".length,
                 "complete": chalk.green(new String("O")),

@@ -1,6 +1,6 @@
 {
   "name": "codeglue",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "A good enough build system",
   "author": "Andrew McPherson <@ehgoodenough>",
   "main": "codeglue.js",
@@ -30,6 +30,8 @@
     "file-loader": "^4.2.0",
     "filesize": "^4.2.0",
     "gh-pages": "^2.1.1",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
     "internal-ip": "^4.3.0",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
