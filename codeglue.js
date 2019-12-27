@@ -19,6 +19,7 @@ const dateformat = require("dateformat")
 const browsersync = require("browser-sync")
 
 const WebpackDefinePlugin = webpack.DefinePlugin
+const WebpackHtmlPlugin = require("html-webpack-plugin")
 const WebpackCopyPlugin = require("copy-webpack-plugin")
 const WebpackStatsPlugin = require("stats-webpack-plugin")
 const WebpackProgressBarPlugin = require("progress-bar-webpack-plugin")
