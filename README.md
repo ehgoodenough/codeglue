@@ -25,7 +25,7 @@ You can optionally add either `--stage=development` or `--stage=production`.
 
 #### `codeglue` ####
 
-Will build from source. It starts with the indexes, like "./source/index.js", and compiles together any and all dependencies (and all dependencies of those dependencies). To declare a dependency in JS, use `require()`, or in CSS, use `@import`. If an error is found in any of the sources, the build is aborted, and the error is reported. When the build is done, the files are put in the "./build/web" directory.
+Will build from source. It starts with the indexes, like "./source/index.js", and compiles together any and all dependencies (and all dependencies of those dependencies). To declare a dependency in JS, use `import`, or in CSS, use `@import`. If an error is found in any of the sources, the build is aborted, and the error is reported. When the build is done, the files are put in the "./build/web" directory.
 
 #### `codeglue --mode=server` ####
 
@@ -44,17 +44,8 @@ Will build from source for a specific stage, like `--stage=development` or `--st
 Codeglue is just a bunch of other build tools setup together:
 
 - [Babel](https://babeljs.io)
-- [Webpack](https://webpack.github.io)
+- [Esbuild](https://esbuild.github.io/)
 - [BrowserSync](https://www.browsersync.io)
-- [UglifyJS](https://github.com/mishoo/UglifyJS)
-- [Electron](http://electron.atom.io)
-- [ESLint](http://eslint.org)
-
-### To Do ###
-
-* Remove implicit dependency on `eslintrc`.
-* Remove default eslint/babel configs.
-* Support bundling with an Electron app.
 
 ### License ###
 

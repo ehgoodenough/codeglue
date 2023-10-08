@@ -1,185 +1,156 @@
 #! /usr/bin/env node
 
-// Codeglue v1.9.x
+// Codeglue v2.x.x
 
 // Usage:
-// codeglue --stage=PRODUCTION
-// codeglue --stage=DEVELOPMENT --mode=SERVER
-// codeglue --stage=PRODUCTION --mode=DEPLOY
+// codeglue --stage=production
+// codeglue --stage=development --mode=server
+const codeglue = {}
 
-const path = require("path")
-const yargs = require("yargs")
-const chalk = require("chalk")
-const rimraf = require("rimraf")
-const ip = require("internal-ip")
-const webpack = require("webpack")
-const filesize = require("filesize")
-const githubpages = require("gh-pages")
-const dateformat = require("dateformat")
-const browsersync = require("browser-sync")
+import path from "path"
+import open from "open"
+import yargs from "yargs"
+import chalk from "chalk"
+import fs from "fs/promises"
+import {rimraf} from "rimraf"
+import * as esbuild from "esbuild"
+import dateformat from "dateformat"
+import browsersync from "browser-sync"
+import {internalIpV4} from "internal-ip"
+import {lessLoader} from "esbuild-plugin-less"
 
-const WebpackDefinePlugin = webpack.DefinePlugin
-const WebpackHtmlPlugin = require("html-webpack-plugin")
-const WebpackCopyPlugin = require("copy-webpack-plugin")
-const WebpackStatsPlugin = require("stats-webpack-plugin")
-const WebpackProgressBarPlugin = require("progress-bar-webpack-plugin")
+const MODE = (yargs(process.argv.slice(2)).argv.mode || process.env.MODE || "BUILD").toUpperCase()
+const STAGE = (yargs(process.argv.slice(2)).argv.stage || process.env.STAGE || "DEVELOPMENT").toUpperCase()
 
-const PACKAGE = require(path.join(process.cwd(), "./package.json"))
+const SOURCE_DIRECTORY = path.resolve("./source")
+const BUILD_DIRECTORY = path.resolve("./builds/web")
 
-const NAME = PACKAGE.name || "!!!"
-const VERSION = PACKAGE.version || "0.0.0"
+const LOCAL_ADDRESS = "127.0.0.1"
+const NETWORK_ADDRESS = await internalIpV4() || "0.0.0.0"
 
-const MODE = (yargs.argv.mode || process.env.MODE || "BUILD").toUpperCase()
-const STAGE = (yargs.argv.stage || process.env.STAGE || "DEVELOPMENT").toUpperCase()
-const SLUG = yargs.argv.slug || "v" + VERSION
+const PORT = 8080
 
-const PORT = yargs.argv.port || process.env.PORT ||  8080
-const SSL = yargs.argv.ssl || process.env.SSL || false
+const timestamp = () => "[" + chalk.green(dateformat(new Date(), "HH:MM:ss")) + "]"
+const pause = (time) => new Promise((done) => setTimeout(done, time))
 
-let LOCAL_ADDRESS = "127.0.0.1"
-let INTERNAL_ADDRESS = "0.0.0.0"
-let PROTOCOL = SSL ? "https" : "http"
-ip.v4().then((address) => {
-    INTERNAL_ADDRESS = address
-})
+await rimraf(BUILD_DIRECTORY)
+await fs.mkdir(BUILD_DIRECTORY, {"recursive": true})
+await fs.copyFile(SOURCE_DIRECTORY + "/codeglued.js", BUILD_DIRECTORY + "/codeglued.js")
 
-const build = new Object()
+const config = {
+    "entryPoints": ["source/index.js"],
+    "outfile": "builds/web/index.js",
+    "bundle": true,
+    "sourcemap": true,
+    "jsxFactory": "Preact.h",
+    "define": {
+        "MODE": MODE,
+        "STAGE": STAGE,
+    },
+    "loader": {
+        // IMAGES
+        ".png": "file",
+        ".jpg": "file",
+        ".gif": "file",
+        ".svg": "file",
 
-rimraf("./builds/web", () => {
-    webpack({
-        "entry": {
-            "index.js": "./source/index.js",
+        // FONTS
+        ".ttf": "file",
+        ".otf": "file",
+        ".eot": "file",
+        ".woff": "file",
+        ".woff2": "file",
+
+        // AUDIO
+        ".mp3": "file",
+        ".wav": "file",
+        ".ogg": "file",
+        ".bank": "file",
+
+        // xml, csv, glsl?
+    },
+    "plugins": [
+        {
+            "name": "logging",
+            "setup": (build) => {
+                build.onStart(() => {
+                    console.log(timestamp(), "Compiling Build...")
+                })
+            }
         },
-        "output": {
-            "filename": "[name]",
-            "path": path.resolve("./builds/web"),
+        lessLoader(),
+        {
+            "name": "export stats",
+            "setup": (build) => {
+                build.onEnd((buildstats) => {
+                    return fs.writeFile(BUILD_DIRECTORY + "/buildstats.json", JSON.stringify(buildstats, null, 4))
+                })
+            }
         },
-        "resolve": {
-            "modules": [
-                path.resolve("./source"),
-                "node_modules"
-            ]
-        },
-        "module": {
-            "rules": [
-                {
-                    "loader": "eslint-loader",
-                    "test": new RegExp("\.js$", "i"),
-                    "exclude": new RegExp("node_modules"),
-                    "enforce": "pre"
-                },
-                {
-                    "loader": "babel-loader",
-                    "test": new RegExp("\.js$", "i"),
-                    "exclude": new RegExp("node_modules"),
-                },
-                {
-                    "loaders": ["style-loader", "css-loader", "less-loader"],
-                    "test": new RegExp("\.(css|less)$", "i"),
-                },
-                {
-                    "loader": "file-loader",
-                    "test": new RegExp("\.(png|jpe?g|gif|svg)$", "i"),
-                },
-                {
-                    "loader": "file-loader",
-                    "test": new RegExp("\.(ttf|woff2?|eot)$", "i"),
-                },
-                {
-                    "loader": "file-loader",
-                    "test": new RegExp("\.(mp3|wav|ogg)$", "i"),
-                },
-                {
-                    "loader": "xml-loader",
-                    "test": new RegExp("\.xml$", "i"),
-                },
-                {
-                    "loader": "csv-loader",
-                    "test": new RegExp("\.csv$", "i"),
-                },
-                {
-                    "loader": "html-loader",
-                    "test": new RegExp("\.html$", "i"),
-                },
-                {
-                    "loaders": ["file-loader", "app-manifest-loader"],
-                    "test": new RegExp("manifest.json", "i"),
-                    "type": "javascript/auto",
-                },
-            ],
-        },
-        "plugins": [
-            // new WebpackHtmlPlugin({
-            //     "template": "source/index.html"
-            // }),
-            new WebpackCopyPlugin([
-                {"from": "source/index.html"},
-            ]),
-            new WebpackProgressBarPlugin({
-                "width": "00000000".length,
-                "complete": chalk.green(new String("O")),
-                "incomplete": chalk.red(new String("0")),
-                "format": "[:bar] Building (:elapseds)",
-                "customSummary": new Function(),
-                "summary": false,
-            }),
-            new WebpackDefinePlugin({
-                __NAME__: JSON.stringify(NAME),
-                __VERSION__: JSON.stringify(VERSION),
-                __STAGE__: JSON.stringify(STAGE),
-            }),
-            new WebpackStatsPlugin("stats.json"),
-        ],
-        "mode": STAGE.toLowerCase(), // stage == mode??
-        "devtool": "source-map",
-        "watch": MODE == "SERVER"
-    }, (error, stats) => {
-        abort(error)
-
-        stats = stats.toJson()
-
-        const time = stats.time / 1000 + "s"
-        const size = filesize(stats.assets.reduce((size, asset) => {
-            return size + asset.size
-        }, 0), {spacer: ""})
-
-        print("Building (" + time + ")(" + size + ")")
-
-        stats.errors.forEach((error) => console.log(error.toString()))
-        stats.warnings.forEach((warning) => console.log(warning.toString()))
-
-        if(MODE == "SERVER") {
-            if(build.server == null) {
-                build.server = browsersync({
-                    "server": "./builds/web",
-                    "logLevel": "silent",
-                    "ghostMode": false,
-                    "notify": false,
-                    "minify": false,
-                    "port": PORT,
-                    "https": SSL && {
-                        "key": require.resolve("./localhost.key"),
-                        "cert": require.resolve("./localhost.crt")
+        {
+            "name": "export html",
+            "setup": (build) => {
+                build.onEnd((buildstats) => {
+                    if(buildstats.errors.length == 0) {
+                        return fs.copyFile(SOURCE_DIRECTORY + "/index.html", BUILD_DIRECTORY + "/index.html")
+                    } else {
+                        return fs.writeFile(BUILD_DIRECTORY + "/index.html", `<html><head></head><body><script src="codeglued.js"></script></body></html>`)
                     }
                 })
-
-                print("Listening on " + chalk.underline(PROTOCOL + "://" + LOCAL_ADDRESS + ":" + PORT))
-                print("Listening on " + chalk.underline(PROTOCOL + "://" + INTERNAL_ADDRESS + ":" + PORT))
-            } else if(build.server != null) {
-                build.server.reload()
             }
-        }
-    })
-})
-
-function print(message) {
-    var time = dateformat(new Date(), "HH:MM:ss")
-    console.log("[" + chalk.green(time) + "]", message)
+        },
+        {
+            "name": "reload server",
+            "setup": (build) => {
+                build.onEnd((buildstats) => {
+                    if(codeglue.server != undefined) {
+                        codeglue.server.reload()
+                    }
+                })
+            }
+        },
+    ]
 }
 
-function abort(error) {
-    if(error != undefined) {
-        console.log(error)
-        throw -1
-    }
+if(MODE == "BUILD") {
+    await esbuild.build(config)
+}
+
+if(MODE == "SERVER") {
+    const buildserver = await esbuild.context(config)
+    await buildserver.watch()
+
+    await new Promise((resolve) => {
+        codeglue.server = browsersync({
+            "server": BUILD_DIRECTORY,
+            "port": PORT,
+            "logLevel": "silent",
+            "ghostMode": false,
+            "notify": false,
+            "open": false,
+            "callbacks": {
+                "ready": () => {
+                    resolve()
+                }
+            },
+            "middleware": [
+                function (request, response, next) {
+                    if(request.url.includes(".ogg")
+                    || request.url.includes(".wav")
+                    || request.url.includes(".mp3")
+                    || request.url.includes(".png")) {
+                        response.setHeader("Cache-Control", "public,max-age=3600,immutable");
+                    }
+                    next()
+                },
+            ],
+        })
+    })
+
+    await pause(300)
+    console.log(timestamp(), "Booting Server...")
+    await pause(600)
+    console.log(timestamp(), "Listening on", chalk.underline("http://" + LOCAL_ADDRESS + ":" + PORT))
+    console.log(timestamp(), "Listening on", chalk.underline("http://" + NETWORK_ADDRESS + ":" + PORT))
+    await open("http://" + LOCAL_ADDRESS + ":" + PORT)
 }
