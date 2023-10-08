@@ -1,10 +1,11 @@
 {
   "name": "codeglue",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A good enough build system",
   "author": "Andrew McPherson <@ehgoodenough>",
   "main": "codeglue.js",
   "bin": "codeglue.js",
+  "type": "module",
   "license": "MIT",
   "engines": {
     "node": ">=14"
