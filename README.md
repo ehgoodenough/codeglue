@@ -47,6 +47,16 @@ Codeglue is just a bunch of other build tools setup together:
 - [Esbuild](https://esbuild.github.io/)
 - [BrowserSync](https://www.browsersync.io)
 
+### Migration from v1 to v2 ###
+
+- No longer need your own babelrc
+- Presumes preact.
+- Uses .jsx for preact.
+- Demands a source/codeglue.js
+- No longer allows root directory imports.
+- Must have package type of module.
+- HTML must import index.css
+
 ### License ###
 
 This project is licensed under the MIT license.
